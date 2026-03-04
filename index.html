@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Asunda Autos | East African Digital Garage</title>
+    <style>
+        :root { --main-gold: #ffcc00; --bg: #121212; --card: #1e1e1e; --text: #ffffff; }
+        body { font-family: 'Segoe UI', sans-serif; background: var(--bg); color: var(--text); padding: 15px; margin: 0; }
+        .tier-card { background: var(--card); border: 1px solid #333; border-radius: 12px; padding: 20px; margin-bottom: 20px; }
+        select, input, textarea { width: 100%; padding: 12px; margin: 10px 0; border-radius: 8px; border: 1px solid #444; background: #2a2a2a; color: white; font-size: 16px; }
+        .btn-pay { background: var(--main-gold); color: black; font-weight: bold; border: none; padding: 15px; width: 100%; border-radius: 8px; font-size: 18px; }
+        .hidden { display: none; }
+    </style>
+</head>
+<body>
+    <div class="tier-card">
+        <h2>🇰🇪 Asunda Autos</h2>
+        <p><i>"Digital garage diagnosis by Johnte"</i></p>
+        
+        <form id="diagForm">
+            <input type="text" placeholder="Make & Model (e.g. Toyota Fielder)" required>
+            
+            <label>Body Type</label>
+            <select onchange="checkOther(this, 'otherBody')">
+                <option>Sedan/Saloon</option>
+                <option>Station Wagon</option>
+                <option>SUV/Crossover</option>
+                <option>Pickup</option>
+                <option value="other">Other (Specify...)</option>
+            </select>
+            <input id="otherBody" class="hidden" type="text" placeholder="Please specify body type">
+
+            <label>Transmission</label>
+            <select onchange="checkOther(this, 'otherTrans')">
+                <option>Automatic</option>
+                <option>Manual</option>
+                <option>CVT</option>
+                <option>eCVT (Hybrid)</option>
+                <option value="other">Other (Specify...)</option>
+            </select>
+            <input id="otherTrans" class="hidden" type="text" placeholder="Please specify transmission">
+
+            <label>Select Your Specialist Tier</label>
+            <select name="tier">
+                <option value="0">Chassis/Vin Decoder - Free (3 uses)</option>
+                <option value="200">Transmission Specialist - KES 200</option>
+                <option value="300">Hybrid Systems Scan - KES 300</option>
+                <option value="1500">Chinese Vehicles Specialist - KES 1500</option>
+                </select>
+
+            <textarea placeholder="Describe the problem (e.g. Gari inalia 'taka-taka'...)"></textarea>
+            
+            <button type="button" class="btn-pay" onclick="alert('Connecting to M-Pesa...')">Pay & Get Diagnosis</button>
+        </form>
+    </div>
+
+    <script>
+        function checkOther(select, inputId) {
+            const input = document.getElementById(inputId);
+            input.classList.toggle('hidden', select.value !== 'other');
+        }
+    </script>
+</body>
+  </html>
