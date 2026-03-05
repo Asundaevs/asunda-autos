@@ -47,7 +47,13 @@
         
         #result-area { margin-top: 25px; display: none; }
         .footer { text-align: center; margin-top: 40px; font-size: 0.8em; line-height: 1.6; opacity: 0.7; }
-        .whatsapp-float { position: fixed; bottom: 20px; right: 20px; background: #25d366; color: white; width: 60px; height: 60px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 30px; box-shadow: 0 4px 10px rgba(0,0,0,0.3); text-decoration: none; }
+        
+        .whatsapp-float { 
+            position: fixed; bottom: 20px; right: 20px; background: #25d366; color: white; 
+            width: 60px; height: 60px; border-radius: 50%; display: flex; 
+            align-items: center; justify-content: center; font-size: 30px; 
+            box-shadow: 0 4px 10px rgba(0,0,0,0.3); text-decoration: none; 
+        }
     </style>
 </head>
 <body>
@@ -59,17 +65,17 @@
     <div class="card" id="main-card">
         <div class="input-group">
             <label>Plate Number</label>
-            <input type="text" id="plate" placeholder="e.g. KDC 123A (Kenya/Uganda/TZ)">
+            <input type="text" id="plate" placeholder="e.g. KDC 123A or UBE 456X">
         </div>
 
         <div class="input-group">
             <label>Chassis / VIN Number</label>
-            <input type="text" id="vin" placeholder="17 digits from logbook or firewall">
+            <input type="text" id="vin" placeholder="17 characters (Check logbook or firewall)">
         </div>
 
         <div class="input-group">
             <label>Engine Code</label>
-            <input type="text" id="engineCode" placeholder="e.g. 1NZ-FE, 2KD, or 4D56">
+            <input type="text" id="engineCode" placeholder="e.g. 1NZ-FE, 2KD, or 4D56 (Check engine block)">
         </div>
 
         <div class="input-group">
@@ -102,11 +108,16 @@
         </div>
 
         <div class="input-group">
+            <label>Record/Upload Engine Sound</label>
+            <input type="file" id="audio" accept="audio/*">
+        </div>
+
+        <div class="input-group">
             <label>Describe the vibration or sound</label>
             <textarea id="issue" rows="4" placeholder="e.g. Gari inalia 'taka-taka' nikikanyaga break..."></textarea>
         </div>
 
-        <button class="gold-btn" id="pay-btn" onclick="handleProcess()">Get Diagnosis</button>
+        <button class="gold-btn" id="pay-btn" onclick="handleProcess()">Get Free Diagnosis</button>
     </div>
 
     <div id="result-area" class="card">
@@ -126,17 +137,19 @@
     </div>
 </div>
 
-<a href="https://wa.me/YOUR_NUMBER" class="whatsapp-float">WA</a>
+<a href="https://wa.me/254115513320" class="whatsapp-float">WA</a>
 
 <script>
+    // Initialize IntaSend with your Live Key
     const intasend = new IntaSend({
-        public_key: "YOUR_INTASEND_PUBLIC_KEY", // Replace with your Live Public Key
+        public_key: "ISPubKey_live_0fab05af-8805-4d99-8619-dbf0df5b7529",
         live: true
     });
 
     function updateUI() {
         const tier = document.getElementById('tier');
         const price = tier.options[tier.selectedIndex].getAttribute('data-price');
+        // Backticks used here correctly to allow dynamic pricing
         document.getElementById('pay-btn').innerText = price == "0" ? "Get Free Diagnosis" : `Pay KES ${price} & Get Diagnosis`;
     }
 
@@ -145,9 +158,9 @@
         const price = tier.options[tier.selectedIndex].getAttribute('data-price');
         
         if(price == "0") {
-            startDiagnosis(); // Free tier
+            startDiagnosis(); // Free tier bypasses payment
         } else {
-            // IntaSend Logic
+            // IntaSend Payment Trigger
             intasend.buttons().on("status_updated", (results) => {
                 if(results.status === "COMPLETE") { startDiagnosis(); }
             }).run({ amount: price, currency: "KES" });
@@ -156,22 +169,22 @@
 
     async function startDiagnosis() {
         document.getElementById('main-card').style.opacity = "0.5";
-        document.getElementById('pay-btn').innerText = "Johnte is working...";
+        document.getElementById('pay-btn').innerText = "Johnte is working under the hood...";
         
-        // Mocking the API call for now (Part 2 will connect this)
+        // Mock API call to simulate loading before Part 2 Python code is connected
         setTimeout(() => {
             document.getElementById('main-card').style.display = "none";
             document.getElementById('result-area').style.display = "block";
-            document.getElementById('johnte-output').innerText = "Hapa Johnte amekupata! Gari yako inahitaji servicing ya haraka kwenye gearbox. Hio sauti ya 'taka-taka' ni clutch plates zimeanza kuteleza...";
+            document.getElementById('johnte-output').innerText = "Hapa Johnte amekupata! Gari yako inahitaji servicing ya haraka. Hio sauti ya 'taka-taka' ni dalili ya shida. [Full AI report will appear here once the Python engine is connected].";
             document.getElementById('report-id').innerText = Math.floor(Math.random() * 90000) + 10000;
         }, 2000);
     }
 
     function generatePDF() {
         const element = document.getElementById('report-content');
-        html2pdf().from(element).save('Asunda_Report.pdf');
+        html2pdf().from(element).save('Asunda_Autos_Report.pdf');
     }
 </script>
 
 </body>
-                    </html>
+    </html>
