@@ -1,83 +1,81 @@
 import os
 import json
-import urllib.request
+import base64
 from http.server import BaseHTTPRequestHandler
+from google import genai
+from google.genai import types
 
-# The "Logbook" for Free Tier tracking (Tracks IP addresses)
+# In-memory tracker for the Free Tier (Resets when serverless function sleeps to save memory)
 FREE_TIER_USAGE = {}
 
 class handler(BaseHTTPRequestHandler):
     def do_OPTIONS(self):
-        # Handle CORS (Allows your frontend to talk to this backend safely)
         self.send_response(200)
         self.send_header('Access-Control-Allow-Origin', '*')
-        self.send_header('Access-Control-Allow-Methods', 'POST, OPTIONS')
         self.send_header('Access-Control-Allow-Headers', 'Content-Type')
         self.end_headers()
 
     def do_POST(self):
         content_length = int(self.headers.get('Content-Length', 0))
-        post_data = self.rfile.read(content_length)
+        data = json.loads(self.rfile.read(content_length).decode('utf-8'))
+        tier = str(data.get('tier', '1'))
         
-        try:
-            # 1. Receive the data from the website
-            data = json.loads(post_data.decode('utf-8'))
-            tier = str(data.get('tier', '0'))
-            plate = data.get('plate', 'Unknown')
-            vin = data.get('vin', 'Unknown')
-            engine = data.get('engineCode', 'Unknown')
-            issue = data.get('issue', 'General checkup')
-            
-            # 2. Free Tier Logic (3 Strikes Rule)
-            client_ip = self.headers.get('X-Forwarded-For', 'unknown_ip').split(',')[0]
-            
-            if tier == "0":
-                current_usage = FREE_TIER_USAGE.get(client_ip, 0)
-                if current_usage >= 3:
-                    error_msg = "Wazi! Umetumia nafasi zako tatu za bure za Chassis Decoder. Sasa rudi kwa menu uchague tier ingine ulipe ndio tusaidiane kazi ya ukweli."
-                    self._send_response(400, {"error": error_msg})
-                    return
-                FREE_TIER_USAGE[client_ip] = current_usage + 1
-            
-            # 3. Security Check: API Keys
-            gemini_key = os.environ.get("GEMINI_API_KEY")
-            intasend_secret = os.environ.get("INTASEND_SECRET_KEY")
-            
-            if not gemini_key:
-                self._send_response(500, {"error": "System Down: Johnte's AI brain is disconnected. Check Vercel Keys."})
+        # Get Client IP to enforce the 3-time Free Tier limit
+        client_ip = self.headers.get('X-Forwarded-For', 'unknown').split(',')[0]
+
+        if tier == "1":
+            usage = FREE_TIER_USAGE.get(client_ip, 0)
+            if usage >= 3:
+                self._send(400, {"error": "Ndugu, free tier limit (3 times) reached! Please select a paid specialist tier to continue."})
                 return
+            FREE_TIER_USAGE[client_ip] = usage + 1
 
-            # 4. The Johnte Persona & East African Context
-            system_prompt = """You are Johnte, a legendary and highly skilled East African garage mechanic (Kenya, Uganda, Tanzania, Rwanda). 
-            You speak a natural mix of professional automotive English, Swahili, and Sheng. 
-            Be direct, candid, and highly technical, but explain things so a regular driver can understand. 
-            Factor in East African driving conditions like heavy dust, potholes, imported ex-JDM cars, Chinese EVs, and coastal humidity/rust.
-            Provide actionable advice, realistic costs, and warn them if the vehicle is dangerous to drive."""
-            
-            user_prompt = f"Vehicle Specs -> Plate: {plate}, VIN: {vin}, Engine: {engine}. \nTier Selected: Option {tier} out of 18. \nCustomer Issue: {issue}. \nProvide a thorough diagnostic report based ONLY on the selected tier's focus area."
+        # Initialize the AI Client
+        client = genai.Client(api_key=os.environ.get("GEMINI_API_KEY"))
+        
+        # Johnte's Legendary Persona Instructions
+        sys_instr = (
+            "You are Johnte, a real legendary mechanic born and bred in the garage environment. "
+            "You are passionate about technology and love vehicles. You developed this system to help "
+            "mechanics, motorists, and vehicle enthusiasts. Speak using a natural mix of Sheng, Swahili, "
+            "and English. Be highly technical, accurate, and direct with your diagnosis based on the requested tier."
+        )
+        
+        # Construct the Vehicle Profile
+        profile = (
+            f"Plate: {data.get('plate', 'N/A')} | "
+            f"Vehicle: {data.get('makeModelYear', 'N/A')} | "
+            f"Body: {data.get('bodyType', 'N/A')} | "
+            f"Fuel: {data.get('fuelType', 'N/A')} | "
+            f"Transmission: {data.get('transmission', 'N/A')} | "
+            f"Engine: {data.get('engineCC', 'N/A')} | "
+            f"Drive: {data.get('driveType', 'N/A')} | "
+            f"Mileage: {data.get('mileage', 'N/A')} km\n\n"
+            f"Customer Issue: {data.get('issue', 'N/A')}\n"
+            f"Service Tier Requested: Tier {tier}"
+        )
+        
+        contents = [profile]
+        
+        # Multimodal processing (Zero Server Storage - streams directly from RAM)
+        if data.get('mediaBase64'):
+            media_bytes = base64.b64decode(data['mediaBase64'])
+            contents.append(types.Part.from_bytes(data=media_bytes, mime_type=data['mediaMimeType']))
 
-            # 5. Connect to Gemini 1.5 Flash
-            url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key={gemini_key}"
-            payload = {
-                "contents": [{"parts": [{"text": f"{system_prompt}\n\n{user_prompt}"}]}]
-            }
-            
-            req = urllib.request.Request(url, data=json.dumps(payload).encode('utf-8'), headers={'Content-Type': 'application/json'})
-            
-            with urllib.request.urlopen(req) as response:
-                res_body = response.read()
-                ai_data = json.loads(res_body.decode('utf-8'))
-                
-                # Extract Johnte's answer
-                report = ai_data['candidates'][0]['content']['parts'][0]['text']
-                self._send_response(200, {"report": report})
-                
+        try:
+            # Using the latest web-optimized engine
+            response = client.models.generate_content(
+                model='gemini-3-flash', 
+                contents=contents, 
+                config=types.GenerateContentConfig(system_instruction=sys_instr)
+            )
+            self._send(200, {"report": response.text})
         except Exception as e:
-            self._send_response(500, {"error": f"Aiseee, gari imekataa kuwaka (System Error): {str(e)}"})
+            self._send(500, {"error": f"Engine Error: {str(e)}"})
 
-    def _send_response(self, status_code, payload):
-        self.send_response(status_code)
+    def _send(self, status, payload):
+        self.send_response(status)
         self.send_header('Content-type', 'application/json')
         self.send_header('Access-Control-Allow-Origin', '*')
         self.end_headers()
-        self.wfile.write(json.dumps(payload).encode('utf-8'))
+        self.wfile.write(json.dumps(payload).encode())
