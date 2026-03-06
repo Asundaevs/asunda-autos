@@ -4,360 +4,228 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Asunda Autos | East African Digital Garage</title>
+    <meta name="description" content="Professional digital vehicle diagnostics. Created by a real legendary mechanic born and bred in the garage environment. Passionate about technology, he developed this system to help mechanics, motorists, and vehicle enthusiasts.">
+    
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#D4AF37">
+    <link rel="apple-touch-icon" href="logo.png">
+
     <script src="https://unpkg.com/intasend-inlinejs-sdk@3.0.4/build/intasend-inline.js"></script>
     
     <style>
-        :root {
-            /* Gold Theme Variables */
-            --primary-gold: #D4AF37;
-            --dark-gold: #AA8C2C;
-            --bg-color: #f4f4f9;
-            --container-bg: #ffffff;
-            --text-color: #333333;
-            --border-color: #cccccc;
-        }
-
-        /* Auto Dark Mode for Phone's System Settings */
-        @media (prefers-color-scheme: dark) {
-            :root {
-                --bg-color: #121212;
-                --container-bg: #1e1e1e;
-                --text-color: #f4f4f9;
-                --border-color: #444444;
-            }
-        }
-
-        * { box-sizing: border-box; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+        :root { --gold: #D4AF37; --bg: #ffffff; --container: #f9f9f9; --text: #1a1a1a; --border: #dddddd; }
+        @media (prefers-color-scheme: dark) { :root { --bg: #0f0f0f; --container: #1a1a1a; --text: #e0e0e0; --border: #333333; } }
         
-        body {
-            background-color: var(--bg-color);
-            color: var(--text-color);
-            margin: 0;
-            padding: 15px;
-            display: flex;
-            justify-content: center;
-        }
-
-        .garage-container {
-            background-color: var(--container-bg);
-            max-width: 600px;
-            width: 100%;
-            padding: 25px;
-            border-radius: 12px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
-            border-top: 5px solid var(--primary-gold);
-        }
-
-        .header { text-align: center; margin-bottom: 25px; }
-        .header h1 { color: var(--primary-gold); margin: 0 0 5px 0; font-size: 1.8rem; letter-spacing: 1px; }
-        .header p { margin: 0; font-size: 0.9rem; opacity: 0.8; font-style: italic; }
-
-        .form-group { margin-bottom: 15px; }
-        label { display: block; font-weight: bold; margin-bottom: 5px; font-size: 0.9rem; }
+        body { background: var(--bg); color: var(--text); font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; margin: 0; padding: 15px; display: flex; justify-content: center; }
+        .card { background: var(--container); max-width: 500px; width: 100%; padding: 20px; border-radius: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); border-top: 4px solid var(--gold); }
+        .header { text-align: center; margin-bottom: 20px; }
+        .header img { max-height: 90px; border-radius: 50%; margin-bottom: 10px; }
+        .header h1 { color: var(--gold); margin: 0; font-size: 1.5rem; text-transform: uppercase; }
+        .header p { font-size: 0.85rem; opacity: 0.8; margin: 5px 0; }
         
-        input[type="text"], input[type="number"], select, textarea {
-            width: 100%;
-            padding: 12px;
-            border: 1px solid var(--border-color);
-            border-radius: 8px;
-            background-color: var(--bg-color);
-            color: var(--text-color);
-            font-size: 1rem;
-        }
+        label { display: block; font-size: 0.85rem; font-weight: 600; margin-top: 12px; margin-bottom: 4px; }
+        input, select, textarea { width: 100%; padding: 12px; border: 1px solid var(--border); border-radius: 8px; background: transparent; color: inherit; font-size: 1rem; box-sizing: border-box; }
+        input:focus, select:focus, textarea:focus { border-color: var(--gold); outline: none; }
         
-        input:focus, select:focus, textarea:focus {
-            outline: none;
-            border-color: var(--primary-gold);
-            box-shadow: 0 0 5px rgba(212, 175, 55, 0.5);
-        }
-
-        .hidden-input { display: none; margin-top: 10px; }
-
-        .btn {
-            width: 100%;
-            padding: 15px;
-            background-color: var(--primary-gold);
-            color: #121212;
-            border: none;
-            border-radius: 8px;
-            font-size: 1.1rem;
-            font-weight: bold;
-            cursor: pointer;
-            margin-top: 10px;
-            transition: background-color 0.3s;
-        }
-
-        .btn:hover { background-color: var(--dark-gold); }
-
-        #diagnosticReport {
-            margin-top: 25px;
-            padding: 15px;
-            background-color: var(--bg-color);
-            border-left: 4px solid var(--primary-gold);
-            border-radius: 5px;
-            min-height: 50px;
-            display: none;
-        }
-
-        .whatsapp-float {
-            position: fixed;
-            bottom: 20px;
-            right: 20px;
-            background-color: #25D366;
-            color: white;
-            padding: 12px 20px;
-            border-radius: 50px;
-            text-decoration: none;
-            font-weight: bold;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.3);
-            z-index: 1000;
-        }
+        .hidden { display: none; margin-top: 8px; border-left: 3px solid var(--gold); padding-left: 10px; }
+        .flex-row { display: flex; gap: 10px; }
+        
+        .upload-box { background: rgba(212, 175, 55, 0.05); border: 2px dashed var(--gold); padding: 15px; border-radius: 8px; text-align: center; margin-top: 15px; }
+        .btn { width: 100%; padding: 15px; background: var(--gold); color: #000; border: none; border-radius: 8px; font-size: 1.1rem; font-weight: bold; cursor: pointer; margin-top: 20px; }
+        #reportArea { margin-top: 20px; padding: 15px; border-radius: 8px; display: none; background: rgba(212, 175, 55, 0.1); border-left: 4px solid var(--gold); }
+        
+        .footer-bio { font-size: 0.75rem; text-align: center; margin-top: 25px; opacity: 0.7; font-style: italic; border-top: 1px solid var(--border); padding-top: 15px; }
+        .wa-btn { position: fixed; bottom: 20px; right: 20px; background: #25D366; color: white; padding: 12px 20px; border-radius: 50px; text-decoration: none; font-weight: bold; box-shadow: 0 4px 10px rgba(0,0,0,0.3); }
     </style>
 </head>
 <body>
 
-    <div class="garage-container">
-        <div class="header">
-            <h1>ASUNDA AUTOS</h1>
-            <p>East African digital garage mechanic.</p>
-        </div>
-
-        <form id="garageForm" onsubmit="event.preventDefault();">
-            <div class="form-group">
-                <label>Plate Number</label>
-                <input type="text" id="plate" placeholder="e.g., KDT 234S, UGS 123A" required>
-            </div>
-            <div class="form-group">
-                <label>Make / Model / Year</label>
-                <input type="text" id="makeModel" placeholder="e.g., Toyota Fielder 2018" required>
-            </div>
-
-            <div class="form-group">
-                <label>Body Type</label>
-                <select id="bodyType" onchange="toggleOther('bodyType', 'otherBodyType')">
-                    <option value="Hatchback">Hatchback</option>
-                    <option value="Sedan">Sedan</option>
-                    <option value="SUV">SUV</option>
-                    <option value="Crossover">Crossover</option>
-                    <option value="Pickup">Pickup</option>
-                    <option value="Van/MPV">Van/MPV</option>
-                    <option value="Station Wagon">Station Wagon</option>
-                    <option value="other">Other / Custom</option>
-                </select>
-                <input type="text" id="otherBodyType" class="hidden-input" placeholder="Specify body type...">
-            </div>
-
-            <div class="form-group">
-                <label>Fuel Type</label>
-                <select id="fuelType" onchange="toggleOther('fuelType', 'otherFuelType')">
-                    <option value="Petrol">Petrol</option>
-                    <option value="Diesel">Diesel</option>
-                    <option value="Hybrid Petrol">Hybrid Petrol</option>
-                    <option value="Hybrid Diesel">Hybrid Diesel</option>
-                    <option value="PHEV">PHEV (Plug-in Hybrid)</option>
-                    <option value="Fully Electric">Fully Electric</option>
-                    <option value="other">Other / Custom</option>
-                </select>
-                <input type="text" id="otherFuelType" class="hidden-input" placeholder="Specify fuel type (e.g., CNG, LPG)...">
-            </div>
-
-            <div class="form-group">
-                <label>Transmission</label>
-                <select id="transmission" onchange="toggleOther('transmission', 'otherTransmission')">
-                    <option value="Automatic">Automatic</option>
-                    <option value="Manual">Manual</option>
-                    <option value="CVT">CVT</option>
-                    <option value="DSG">DSG (Dual Clutch)</option>
-                    <option value="other">Other / Custom</option>
-                </select>
-                <input type="text" id="otherTransmission" class="hidden-input" placeholder="Specify transmission (e.g., AMT)...">
-            </div>
-
-            <div class="form-group">
-                <label>Engine Displacement (CC)</label>
-                <input type="text" id="engineCC" placeholder="e.g., 1500cc, 2000cc" required>
-            </div>
-
-            <div class="form-group">
-                <label>Drive Type</label>
-                <select id="driveType" onchange="toggleOther('driveType', 'otherDriveType')">
-                    <option value="2WD Front">2WD Front</option>
-                    <option value="2WD Rear">2WD Rear</option>
-                    <option value="AWD">AWD (All-Wheel Drive)</option>
-                    <option value="4WD">4WD (Four-Wheel Drive)</option>
-                    <option value="other">Other / Custom</option>
-                </select>
-                <input type="text" id="otherDriveType" class="hidden-input" placeholder="Specify drive type (e.g., 6x4)...">
-            </div>
-
-            <div class="form-group">
-                <label>Current Mileage (km)</label>
-                <input type="number" id="mileage" placeholder="e.g., 120000" required>
-            </div>
-
-            <div class="form-group">
-                <label>What is the main issue?</label>
-                <textarea id="issue" rows="3" placeholder="e.g., Gari inazima nikistop, or Engine knocking sound when cold..." required></textarea>
-            </div>
-
-            <div class="form-group">
-                <label>Select Specialist Fundi (Tier)</label>
-                <select id="tierSelect" onchange="updateButtonState()">
-                    <option value="1">1. Chassis/Vin Decoder - FREE</option>
-                    <option value="2">2. Oils & Fluids Specialist - KES 60</option>
-                    <option value="3">3. Braking & ABS System - KES 70</option>
-                    <option value="4">4. OBD2/Trouble Codes - KES 50</option>
-                    <option value="5">5. Engine Diagnostics - KES 80</option>
-                    <option value="6">6. Suspension & Steering - KES 100</option>
-                    <option value="7">7. Regional Market Valuation - KES 100</option>
-                    <option value="8">8. Maintenance Roadmap - KES 40</option>
-                    <option value="9">9. Transmission Specialist - KES 200</option>
-                    <option value="10">10. Road-test Diagnostics - KES 150</option>
-                    <option value="11">11. Hybrid Systems Scan - KES 300</option>
-                    <option value="12">12. Wiring Specialist - KES 250</option>
-                    <option value="13">13. Skeptical Pre-Purchase - KES 500</option>
-                    <option value="14">14. Fully Electric (EV) - KES 1200</option>
-                    <option value="15">15. Chinese Vehicles - KES 1500</option>
-                    <option value="16">16. Drivetrain (4WD/AWD) - KES 150</option>
-                    <option value="17">17. Others / Custom - KES 750</option>
-                    <option value="18">18. PHEV System Specialist - KES 400</option>
-                </select>
-            </div>
-
-            <button id="mainBtn" class="btn" onclick="handleTierAction()">Get Free Diagnosis</button>
-            <button id="intaSendBtn" class="intaSendPayButton" style="display:none;" data-amount="0" data-currency="KES">Hidden Pay</button>
-            
-        </form>
-
-        <div id="diagnosticReport"></div>
-        
-        <div style="text-align: center; margin-top: 20px; font-size: 0.8rem; opacity: 0.7;">
-            Powered by Johnte AI | Asunda Autos
-        </div>
+<div class="card">
+    <div class="header">
+        <img src="logo.png" alt="Asunda Autos Logo">
+        <h1>Asunda Autos</h1>
+        <p>East African Digital Garage Mechanic</p>
     </div>
 
-    <a href="https://wa.me/254115513320" target="_blank" class="whatsapp-float">Chat with Human 💬</a>
+    <form id="carForm">
+        <label>Plate Number</label>
+        <input type="text" id="plate" placeholder="e.g. KDT 234S" required>
 
-    <script>
-        // Tier Pricing Map
-        const prices = {
-            "1": 0, "2": 60, "3": 70, "4": 50, "5": 80, "6": 100, "7": 100, 
-            "8": 40, "9": 200, "10": 150, "11": 300, "12": 250, "13": 500, 
-            "14": 1200, "15": 1500, "16": 150, "17": 750, "18": 400
+        <label>Make / Model / Year</label>
+        <input type="text" id="makeModel" placeholder="e.g. Toyota Fielder 2018" required>
+
+        <label>Body Type</label>
+        <select id="bodyType" onchange="toggleOther(this, 'customBody')">
+            <option value="Hatchback">Hatchback</option><option value="Sedan">Sedan</option><option value="SUV">SUV</option>
+            <option value="Crossover">Crossover</option><option value="Pickup">Pickup</option><option value="Van/MPV">Van/MPV</option>
+            <option value="Station Wagon">Station Wagon</option><option value="other">Other/Custom...</option>
+        </select>
+        <input type="text" id="customBody" class="hidden" placeholder="Specify body type">
+
+        <label>Fuel Type</label>
+        <select id="fuelType" onchange="toggleOther(this, 'customFuel')">
+            <option value="Petrol">Petrol</option><option value="Diesel">Diesel</option><option value="Hybrid Petrol">Hybrid Petrol</option>
+            <option value="Hybrid Diesel">Hybrid Diesel</option><option value="PHEV">PHEV</option><option value="Fully Electric">Fully Electric</option>
+            <option value="other">Other/Custom...</option>
+        </select>
+        <input type="text" id="customFuel" class="hidden" placeholder="Specify fuel type">
+
+        <label>Transmission</label>
+        <select id="transmission" onchange="toggleOther(this, 'customTrans')">
+            <option value="Automatic">Automatic</option><option value="Manual">Manual</option><option value="CVT">CVT</option>
+            <option value="DSG">DSG</option><option value="other">Other/Custom...</option>
+        </select>
+        <input type="text" id="customTrans" class="hidden" placeholder="Specify transmission">
+
+        <label>Drive Type</label>
+        <select id="driveType">
+            <option value="2WD Front">2WD Front</option><option value="2WD Rear">2WD Rear</option><option value="AWD">AWD</option><option value="4WD">4WD</option>
+        </select>
+
+        <label>Engine CC & Mileage</label>
+        <div class="flex-row">
+            <input type="text" id="engineCC" placeholder="Engine CC (e.g. 1500)" required>
+            <input type="number" id="mileage" placeholder="Mileage (KM)" required>
+        </div>
+
+        <label>Describe the Issue</label>
+        <textarea id="issue" rows="3" placeholder="Aiseee, what is the problem?" required></textarea>
+
+        <div class="upload-box">
+            <label style="margin-top:0; color:var(--gold);">Attach Photo/Audio/Video (Max 5MB)</label>
+            <input type="file" id="mediaFile" accept="image/*,audio/*,video/*" style="border:none; padding-left:0;">
+            <div style="font-size:0.75rem; margin-top:5px; opacity:0.8;">Johnte will analyze the media for a better diagnosis. No files are saved to our servers.</div>
+        </div>
+
+        <label>Select Specialist Fundi (Tier)</label>
+        <select id="tierSelect" onchange="updateBtnText()">
+            <option value="1">1. Chassis/Vin Decoder - FREE</option>
+            <option value="2">2. Oils and Fluids Specialist - KES 60</option>
+            <option value="3">3. Braking and ABS Specialist - KES 70</option>
+            <option value="4">4. OBD2/Trouble Codes Decoding - KES 50</option>
+            <option value="5">5. Engine Diagnostics/Specialist - KES 80</option>
+            <option value="6">6. Suspension and Steering Specialist - KES 100</option>
+            <option value="7">7. Regional Market Valuation - KES 100</option>
+            <option value="8">8. Maintenance Roadmap - KES 40</option>
+            <option value="9">9. Transmission Specialist - KES 200</option>
+            <option value="10">10. Road-test Diagnostics - KES 150</option>
+            <option value="11">11. Hybrid Systems Scan/Check - KES 300</option>
+            <option value="12">12. Wiring Specialist - KES 250</option>
+            <option value="13">13. Skeptical Pre-Purchase Inspector - KES 500</option>
+            <option value="14">14. Fully Electric Vehicles Specialist - KES 1,200</option>
+            <option value="15">15. Chinese Vehicles Specialist - KES 1,500</option>
+            <option value="16">16. Drivetrain (4WD/AWD) - KES 150</option>
+            <option value="17">17. Others/Custom - KES 750</option>
+            <option value="18">18. PHEV System Specialist - KES 400</option>
+        </select>
+
+        <button type="button" id="actionBtn" class="btn" onclick="processEntry()">Get Free Diagnosis</button>
+        <button type="button" id="intaSendBtn" class="intaSendPayButton" style="display:none;" data-amount="0" data-currency="KES">Pay</button>
+    </form>
+
+    <div id="reportArea"></div>
+
+    <div class="footer-bio">
+        Created by a real legendary mechanic born and bred in the garage environment. Passionate about technology, he developed this system to help mechanics, motorists, and vehicle enthusiasts.
+    </div>
+</div>
+
+<a href="https://wa.me/254115513320" target="_blank" class="wa-btn">Chat with Human 💬</a>
+
+<script>
+    // PWA Registration
+    if ('serviceWorker' in navigator) { navigator.serviceWorker.register('/sw.js'); }
+
+    // Tier Pricing Dictionary
+    const prices = {"1":0,"2":60,"3":70,"4":50,"5":80,"6":100,"7":100,"8":40,"9":200,"10":150,"11":300,"12":250,"13":500,"14":1200,"15":1500,"16":150,"17":750,"18":400};
+    
+    // IntaSend Initialization
+    const intasend = new window.IntaSend({ publicAPIKey: "ISPubKey_live_0fab53b5-fcd7-4228-a681-35b804bb1b1c", live: true });
+
+    function toggleOther(selectEl, inputId) {
+        document.getElementById(inputId).style.display = (selectEl.value === 'other') ? 'block' : 'none';
+    }
+
+    function updateBtnText() {
+        const tier = document.getElementById('tierSelect').value;
+        document.getElementById('actionBtn').textContent = (tier === "1") ? "Get Free Diagnosis" : `Pay KES ${prices[tier]} & Diagnose`;
+    }
+
+    async function processEntry() {
+        const tier = document.getElementById('tierSelect').value;
+        const fileInput = document.getElementById('mediaFile');
+        
+        // Safety Guard: 5MB Limit
+        if (fileInput.files.length > 0 && fileInput.files[0].size > 5 * 1024 * 1024) {
+            alert("Ndugu, file is too large! Maximum allowed is 5MB to save bandwidth.");
+            return;
+        }
+
+        if (tier === "1") {
+            sendToAI();
+        } else {
+            document.getElementById('intaSendBtn').dataset.amount = prices[tier];
+            document.getElementById('intaSendBtn').click();
+        }
+    }
+
+    intasend.on("COMPLETE", sendToAI);
+
+    async function sendToAI() {
+        const reportArea = document.getElementById('reportArea');
+        reportArea.style.display = "block";
+        reportArea.innerHTML = "<b>Johnte is analyzing the vehicle... 🛠️</b>";
+
+        let mediaBase64 = null;
+        let mediaMimeType = null;
+        const fileInput = document.getElementById('mediaFile');
+
+        // Process Multimodal File Stream
+        if (fileInput.files.length > 0) {
+            const file = fileInput.files[0];
+            mediaMimeType = file.type;
+            mediaBase64 = await new Promise((resolve) => {
+                const reader = new FileReader();
+                reader.onload = () => resolve(reader.result.split(',')[1]);
+                reader.readAsDataURL(file);
+            });
+        }
+
+        // Gather Profile Data
+        const payload = {
+            plate: document.getElementById('plate').value,
+            makeModelYear: document.getElementById('makeModel').value,
+            bodyType: document.getElementById('bodyType').value === 'other' ? document.getElementById('customBody').value : document.getElementById('bodyType').value,
+            fuelType: document.getElementById('fuelType').value === 'other' ? document.getElementById('customFuel').value : document.getElementById('fuelType').value,
+            transmission: document.getElementById('transmission').value === 'other' ? document.getElementById('customTrans').value : document.getElementById('transmission').value,
+            engineCC: document.getElementById('engineCC').value,
+            driveType: document.getElementById('driveType').value,
+            mileage: document.getElementById('mileage').value,
+            issue: document.getElementById('issue').value,
+            tier: document.getElementById('tierSelect').value,
+            mediaBase64: mediaBase64,
+            mediaMimeType: mediaMimeType
         };
 
-        // Initialize IntaSend
-        let intasendObj = new window.IntaSend({
-            publicAPIKey: "ISPubKey_live_0fab53b5-fcd7-4228-a681-35b804bb1b1c", // Your Key
-            live: true 
-        });
-
-        // Toggle "Other" input boxes
-        function toggleOther(selectId, inputId) {
-            const select = document.getElementById(selectId);
-            const input = document.getElementById(inputId);
-            if (select.value === 'other') {
-                input.style.display = 'block';
-            } else {
-                input.style.display = 'none';
-                input.value = '';
-            }
-        }
-
-        // Helper to get selected or custom value
-        function getFinalValue(selectId, inputId) {
-            const select = document.getElementById(selectId);
-            return select.value === 'other' ? document.getElementById(inputId).value : select.value;
-        }
-
-        // Update Button Text based on Tier selected
-        function updateButtonState() {
-            const tier = document.getElementById('tierSelect').value;
-            const btn = document.getElementById('mainBtn');
-            const hiddenBtn = document.getElementById('intaSendBtn');
+        try {
+            const res = await fetch('/api', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify(payload)
+            });
+            const data = await res.json();
             
-            if (tier === "1") {
-                btn.textContent = "Get Free Diagnosis (Max 3)";
+            if (res.ok) {
+                // Convert line breaks to HTML for clean reading
+                reportArea.innerHTML = `<h3>Johnte's Diagnostic Report</h3><p>${data.report.replace(/\n/g, '<br>')}</p>`;
             } else {
-                const price = prices[tier];
-                btn.textContent = `Pay KES ${price} & Get Diagnosis`;
-                hiddenBtn.dataset.amount = price; // Update hidden IntaSend button
+                reportArea.innerHTML = `<span style="color:red"><b>Error:</b> ${data.error}</span>`;
             }
+        } catch (e) {
+            reportArea.innerHTML = "<span style="color:red">Network error. Please check your connection.</span>";
         }
+    }
+</script>
 
-        // Handle the Click
-        function handleTierAction() {
-            // Validate basic inputs first
-            if(!document.getElementById('plate').value || !document.getElementById('makeModel').value || !document.getElementById('issue').value) {
-                alert("Ndugu, please fill in the Plate, Make/Model, and Issue before proceeding.");
-                return;
-            }
-
-            const tier = document.getElementById('tierSelect').value;
-            
-            if (tier === "1") {
-                // Tier 1 is Free: Go straight to Python API
-                callJohnteAI();
-            } else {
-                // Paid Tier: Trigger the hidden IntaSend button
-                document.getElementById('intaSendBtn').click();
-            }
-        }
-
-        // IntaSend Event Listeners (Triggers API only if payment is complete)
-        intasendObj.on("COMPLETE", (results) => { 
-            console.log("Payment Success!", results);
-            callJohnteAI(); 
-        })
-        .on("FAILED", (results) => { 
-            alert("Aiseee, payment failed. Tafadhali jaribu tena."); 
-        })
-        .on("IN-PROGRESS", (results) => { 
-            document.getElementById('diagnosticReport').style.display = "block";
-            document.getElementById('diagnosticReport').innerHTML = '<span style="color:var(--dark-gold);">Processing Payment...</span>';
-        });
-
-        // The Brain Connection: Calls api/index.py
-        async function callJohnteAI() {
-            const reportDiv = document.getElementById('diagnosticReport');
-            reportDiv.style.display = "block";
-            reportDiv.innerHTML = '<div style="color:var(--dark-gold); font-weight:bold;">Johnte is inspecting the vehicle... 🛠️</div>';
-
-            // Gather all user data
-            const payload = {
-                plate: document.getElementById('plate').value,
-                makeModelYear: document.getElementById('makeModel').value,
-                bodyType: getFinalValue('bodyType', 'otherBodyType'),
-                fuelType: getFinalValue('fuelType', 'otherFuelType'),
-                transmission: getFinalValue('transmission', 'otherTransmission'),
-                engineCC: document.getElementById('engineCC').value,
-                driveType: getFinalValue('driveType', 'otherDriveType'),
-                mileage: document.getElementById('mileage').value,
-                tier: document.getElementById('tierSelect').value,
-                issue: document.getElementById('issue').value
-            };
-
-            try {
-                // Send to Vercel Python Backend
-                const response = await fetch('/api', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(payload)
-                });
-
-                const result = await response.json();
-
-                if (response.ok) {
-                    reportDiv.innerHTML = `<h3 style="color:var(--primary-gold); margin-top:0;">Diagnostic Report</h3><p style="line-height:1.6;">${result.report.replace(/\n/g, '<br>')}</p>`;
-                } else {
-                    reportDiv.innerHTML = `<div style="color: #ff4d4d; border: 1px solid #ff4d4d; padding: 15px; border-radius: 8px;">
-                        <strong>Error from Garage:</strong><br>${result.error}
-                    </div>`;
-                }
-            } catch (error) {
-                reportDiv.innerHTML = '<p style="color:#ff4d4d">Error connecting to the garage. Check your internet connection.</p>';
-            }
-        }
-    </script>
 </body>
-                    </html>
+            </html>
