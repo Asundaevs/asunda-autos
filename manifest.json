@@ -1,0 +1,10 @@
+{
+  "name": "Asunda Autos",
+  "short_name": "Asunda",
+  "description": "East African Digital Garage Mechanic",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#0f0f0f",
+  "theme_color": "#D4AF37",
+  "icons": [{ "src": "logo.png", "sizes": "512x512", "type": "image/png" }]
+}
