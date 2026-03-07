@@ -69,9 +69,9 @@ class handler(BaseHTTPRequestHandler):
                 media_bytes = base64.b64decode(data['mediaBase64'])
                 contents.append(types.Part.from_bytes(data=media_bytes, mime_type=data['mediaMimeType']))
 
-            # Using Gemini 3 Flash for fast web execution
+            # Using stable Gemini 2.5 Flash for high-traffic production
             response = client.models.generate_content(
-                model='gemini-3-flash', 
+                model='gemini-2.5-flash', 
                 contents=contents, 
                 config=types.GenerateContentConfig(system_instruction=sys_instr)
             )
