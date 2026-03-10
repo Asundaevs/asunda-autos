@@ -2,7 +2,7 @@
 // REWRITE V2.0 (WITH INTASEND DEBUGGER)
 
 // 1. CONFIGURATION - CHANGE YOUR KEY HERE
-const PUBLIC_KEY = "YOUR_PUBLISHABLE_KEY_HERE"; // Must start with ISPubKey_
+const PUBLIC_KEY = "ISPubKey_live_0fab05af-8805-4d99-8619-dbf0df5b7529"; // Must start with ISPubKey_
 const IS_LIVE = false; // Set to TRUE only when using real money/live keys
 
 // 2. INITIALIZE INTASEND
