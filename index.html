@@ -4,267 +4,131 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Asunda Autos | East African Digital Garage</title>
-    <meta name="description" content="Professional digital vehicle diagnostics. Created by a real legendary mechanic born and bred in the garage environment.">
-    
-    <link rel="manifest" href="manifest.json">
-    <meta name="theme-color" content="#D4AF37">
-    <link rel="apple-touch-icon" href="logo.png">
-
+    <meta name="description" content="Talk to Johnte, the legendary East African mechanic. Fast, accurate, multimodal vehicle diagnostics, valuation, and repair roadmaps directly from your phone.">
+    <meta name="keywords" content="car diagnostics Kenya, online mechanic, Johnte, Asunda Autos, OBD2 decoding, East Africa auto repair">
+    <link rel="stylesheet" href="style.css">
     <script src="https://unpkg.com/intasend-inlinejs-sdk@3.0.4/build/intasend-inline.js"></script>
-    
-    <style>
-        :root { --gold: #D4AF37; --bg: #ffffff; --container: #f9f9f9; --text: #1a1a1a; --border: #dddddd; }
-        @media (prefers-color-scheme: dark) { :root { --bg: #0f0f0f; --container: #1a1a1a; --text: #e0e0e0; --border: #333333; } }
-        
-        body { background: var(--bg); color: var(--text); font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; margin: 0; padding: 15px; display: flex; justify-content: center; }
-        .card { background: var(--container); max-width: 500px; width: 100%; padding: 20px; border-radius: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); border-top: 4px solid var(--gold); }
-        .header { text-align: center; margin-bottom: 10px; }
-        .header img { width: 80px; height: 80px; border-radius: 50%; object-fit: cover; margin-bottom: 10px; border: 2px solid var(--gold); }
-        .header h1 { color: var(--gold); margin: 0; font-size: 1.5rem; text-transform: uppercase; }
-        .header p { font-size: 0.85rem; opacity: 0.8; margin: 5px 0; }
-        .status-light { font-size: 0.7rem; color: #25D366; font-weight: bold; text-align: center; margin-bottom: 15px; }
-        
-        label { display: block; font-size: 0.85rem; font-weight: 600; margin-top: 12px; margin-bottom: 4px; }
-        input, select, textarea { width: 100%; padding: 12px; border: 1px solid var(--border); border-radius: 8px; background: transparent; color: inherit; font-size: 1rem; box-sizing: border-box; }
-        input:focus, select:focus, textarea:focus { border-color: var(--gold); outline: none; }
-        
-        .hidden { display: none; margin-top: 8px; border-left: 3px solid var(--gold); padding-left: 10px; }
-        .flex-row { display: flex; gap: 10px; }
-        
-        .upload-box { background: rgba(212, 175, 55, 0.05); border: 2px dashed var(--gold); padding: 15px; border-radius: 8px; text-align: center; margin-top: 15px; }
-        .btn { width: 100%; padding: 15px; background: var(--gold); color: #000; border: none; border-radius: 8px; font-size: 1.1rem; font-weight: bold; cursor: pointer; margin-top: 20px; text-transform: uppercase; }
-        
-        #reportArea { margin-top: 20px; padding: 15px; border-radius: 8px; display: none; background: rgba(212, 175, 55, 0.1); border-left: 4px solid var(--gold); line-height: 1.5; }
-        #errorBox { margin-top: 20px; padding: 15px; border-radius: 8px; display: none; background: #ffebee; color: #c62828; border-left: 4px solid #c62828; font-family: monospace; font-size: 0.85rem; word-break: break-all; }
-        
-        .footer-bio { font-size: 0.8rem; text-align: center; margin-top: 25px; opacity: 0.8; border-top: 1px solid var(--border); padding-top: 15px; }
-        .wa-btn { position: fixed; bottom: 20px; right: 20px; background: #25D366; color: white; padding: 12px 20px; border-radius: 50px; text-decoration: none; font-weight: bold; box-shadow: 0 4px 10px rgba(0,0,0,0.3); z-index: 1000; }
-    </style>
 </head>
 <body>
+    <div class="container">
+        <header>
+            <img src="logo.png" alt="Asunda Autos Logo" class="brand-logo" onerror="this.style.display='none'">
+            <h1>Asunda Autos</h1>
+            <p class="tagline">The East African Digital Garage</p>
+            <div class="legend-box">
+                <p><strong>Meet Johnte:</strong> A legendary master mechanic born and bred in the garage environment. He loves tech and is here to give you expert, no-nonsense advice to keep your machine moving.</p>
+            </div>
+        </header>
 
-<div class="card">
-    <div class="header">
-        <img src="logo.png" alt="Asunda Autos Logo">
-        <h1>Asunda Autos</h1>
-        <p>East African Digital Garage Mechanic</p>
-    </div>
-    <div class="status-light">🟢 System Ready (Engine Online)</div>
+        <form id="johnteForm">
+            <h3>Vehicle Profile</h3>
+            
+            <input type="text" id="userName" placeholder="Your Name" required>
+            <input type="text" id="plateNumber" placeholder="Plate Number (e.g., KDA 123A)" required>
+            <input type="text" id="makeModelYear" placeholder="Make / Model / Year (e.g., Toyota Prado 2018)" required>
+            
+            <select id="bodyType" required onchange="toggleOther('bodyType', 'bodyTypeOther')">
+                <option value="" disabled selected>Select Body Type...</option>
+                <option value="Hatchback">Hatchback</option>
+                <option value="Sedan">Sedan</option>
+                <option value="SUV">SUV</option>
+                <option value="Crossover">Crossover</option>
+                <option value="Pickup">Pickup</option>
+                <option value="Van/MPV">Van/MPV</option>
+                <option value="Station Wagon">Station Wagon</option>
+                <option value="Other">Other (Type below)</option>
+            </select>
+            <input type="text" id="bodyTypeOther" class="hidden custom-input" placeholder="Specify Body Type">
 
-    <div id="errorBox"><strong>Check Engine Light:</strong><br><span id="errorText"></span></div>
+            <select id="fuelType" required onchange="toggleOther('fuelType', 'fuelTypeOther')">
+                <option value="" disabled selected>Select Fuel Type...</option>
+                <option value="Petrol">Petrol</option>
+                <option value="Diesel">Diesel</option>
+                <option value="Hybrid Petrol">Hybrid Petrol</option>
+                <option value="Hybrid Diesel">Hybrid Diesel</option>
+                <option value="PHEV">PHEV</option>
+                <option value="Fully Electric">Fully Electric</option>
+                <option value="Other">Other (Type below)</option>
+            </select>
+            <input type="text" id="fuelTypeOther" class="hidden custom-input" placeholder="Specify Fuel Type">
 
-    <form id="carForm">
-        <label>Plate Number</label>
-        <input type="text" id="plate" placeholder="e.g. KDT 234S">
+            <select id="transmission" required onchange="toggleOther('transmission', 'transmissionOther')">
+                <option value="" disabled selected>Select Transmission...</option>
+                <option value="Manual">Manual</option>
+                <option value="Automatic">Automatic</option>
+                <option value="CVT">CVT</option>
+                <option value="DSG">DSG</option>
+                <option value="Other">Other (Type below)</option>
+            </select>
+            <input type="text" id="transmissionOther" class="hidden custom-input" placeholder="Specify Transmission">
 
-        <label>Make / Model / Year</label>
-        <input type="text" id="makeModel" placeholder="e.g. Toyota Fielder 2018">
+            <select id="driveType" required onchange="toggleOther('driveType', 'driveTypeOther')">
+                <option value="" disabled selected>Select Drive Type...</option>
+                <option value="2WD Front">2WD Front</option>
+                <option value="2WD Rear">2WD Rear</option>
+                <option value="AWD">AWD</option>
+                <option value="4WD">4WD</option>
+                <option value="Other">Other (Type below)</option>
+            </select>
+            <input type="text" id="driveTypeOther" class="hidden custom-input" placeholder="Specify Drive Type">
 
-        <label>Body Type</label>
-        <select id="bodyType" onchange="toggleOther(this, 'customBody')">
-            <option value="Hatchback">Hatchback</option><option value="Sedan">Sedan</option><option value="SUV">SUV</option>
-            <option value="Crossover">Crossover</option><option value="Pickup">Pickup</option><option value="Van/MPV">Van/MPV</option>
-            <option value="Station Wagon">Station Wagon</option><option value="other">Other/I don't know...</option>
-        </select>
-        <input type="text" id="customBody" class="hidden" placeholder="Specify body type">
+            <input type="text" id="engineCC" placeholder="Engine Displacement (CC)" required>
+            <input type="text" id="mileage" placeholder="Current Mileage (e.g., 120,000 km)" required>
+            
+            <div class="input-group">
+                <input type="text" id="engineCode" placeholder="Engine Code (Optional)">
+                <small class="helper-text">Providing your engine code allows Johnte to cross-reference your specific setup against factory specifications, preventing incorrect parts recommendations and saving you money.</small>
+            </div>
 
-        <label>Fuel Type</label>
-        <select id="fuelType" onchange="toggleOther(this, 'customFuel')">
-            <option value="Petrol">Petrol</option><option value="Diesel">Diesel</option><option value="Hybrid Petrol">Hybrid Petrol</option>
-            <option value="Hybrid Diesel">Hybrid Diesel</option><option value="PHEV">PHEV</option><option value="Fully Electric">Fully Electric</option>
-            <option value="other">Other/I don't know...</option>
-        </select>
-        <input type="text" id="customFuel" class="hidden" placeholder="Specify fuel type">
+            <h3>Diagnosis Details</h3>
+            <div class="input-group">
+                <label>Upload Photo or Audio of the issue (Optional):</label>
+                <input type="file" id="mediaUpload" accept="image/*,video/*,audio/*">
+            </div>
 
-        <label>Transmission</label>
-        <select id="transmission" onchange="toggleOther(this, 'customTrans')">
-            <option value="Automatic">Automatic</option><option value="Manual">Manual</option><option value="CVT">CVT</option>
-            <option value="DSG">DSG</option><option value="other">Other/I don't know...</option>
-        </select>
-        <input type="text" id="customTrans" class="hidden" placeholder="Specify transmission">
+            <textarea id="issueDescription" placeholder="What is the problem? Describe the sounds, leaks, or how the car feels..." required></textarea>
 
-        <label>Drive Type</label>
-        <select id="driveType">
-            <option value="2WD Front">2WD Front</option><option value="2WD Rear">2WD Rear</option><option value="AWD">AWD</option><option value="4WD">4WD</option>
-        </select>
+            <select id="serviceTier" required>
+                <option value="" disabled selected>Select a Service Tier...</option>
+                <option value="0|Chassis/Vin decoder">1. Chassis/Vin decoder - Free</option>
+                <option value="60|Oils and fluids specialist">2. Oils and fluids specialist - KES 60</option>
+                <option value="70|Braking and Abs system specialist">3. Braking and Abs system specialist - KES 70</option>
+                <option value="50|OBD2/Trouble codes decoding">4. OBD2/Trouble codes decoding - KES 50</option>
+                <option value="80|Engine diagnostics/Specialist">5. Engine diagnostics/Specialist - KES 80</option>
+                <option value="100|Suspension and Steering systems specialist">6. Suspension and Steering systems specialist - KES 100</option>
+                <option value="100|Regional Market Valuation">7. Regional Market Valuation - KES 100</option>
+                <option value="40|Maintenance roadmap">8. Maintenance roadmap / Service details - KES 40</option>
+                <option value="200|Transmission Specialist">9. Transmission Specialist - KES 200</option>
+                <option value="150|Road-test Diagnostics">10. Road-test Diagnostics - KES 150</option>
+                <option value="300|Hybrid Systems Scan/Check">11. Hybrid Systems Scan/Check - KES 300</option>
+                <option value="250|Wiring Specialist">12. Wiring Specialist - KES 250</option>
+                <option value="500|Skeptical Pre Purchase Inspector">13. Skeptical Pre Purchase Inspector - KES 500</option>
+                <option value="1200|Fully Electric Vehicles Specialist">14. Fully Electric Vehicles Specialist - KES 1,200</option>
+                <option value="1500|Chinese Vehicles Specialist">15. Chinese Vehicles Specialist - KES 1,500</option>
+                <option value="150|Drivetrain (4wd/AWD)">16. Drivetrain (4wd/AWD) - KES 150</option>
+                <option value="750|Others/Custom">17. Others/Custom - KES 750</option>
+                <option value="400|PHEV System Specialist">18. PHEV System Specialist - KES 400</option>
+                <option value="150|Cooling System Specialist">19. Cooling System Specialist - KES 150</option>
+                <option value="150|Exhaust System Specialist">20. Exhaust System Specialist - KES 150</option>
+            </select>
 
-        <label>Engine CC & Mileage</label>
-        <div class="flex-row">
-            <input type="number" id="engineCC" placeholder="Engine CC (e.g. 1500)">
-            <input type="number" id="mileage" placeholder="Mileage (KM)">
+            <button type="submit" id="payButton">Ask Johnte</button>
+        </form>
+
+        <div id="statusMessage" class="hidden status-toast"></div>
+        
+        <div id="resultArea" class="hidden">
+            <h3>Johnte's Report:</h3>
+            <div id="diagnosisText" class="report-box"></div>
+            <div class="warning-box">
+                <strong>⚠️ IMPORTANT: Please screenshot this report immediately.</strong> For your privacy, all data and media are permanently deleted from our servers after this session.
+            </div>
         </div>
 
-        <label>Describe the Issue</label>
-        <textarea id="issue" rows="3" placeholder="Aiseee, what is the problem with the vehicle?"></textarea>
-
-        <div class="upload-box">
-            <label style="margin-top:0; color:var(--gold);">Attach Photo/Audio/Video (Max 5MB)</label>
-            <input type="file" id="mediaFile" accept="image/*,audio/*,video/*" style="border:none; padding-left:0;">
-            <div style="font-size:0.75rem; margin-top:5px; opacity:0.8;">Johnte will analyze the media. No files are saved to our servers.</div>
-        </div>
-
-        <label>Select Specialist Fundi (Tier)</label>
-        <select id="tierSelect" onchange="updateBtnText()">
-            <option value="1">1. Chassis/Vin Decoder - FREE</option>
-            <option value="2">2. Oils and Fluids Specialist - KES 60</option>
-            <option value="3">3. Braking and ABS Specialist - KES 70</option>
-            <option value="4">4. OBD2/Trouble Codes Decoding - KES 50</option>
-            <option value="5">5. Engine Diagnostics/Specialist - KES 80</option>
-            <option value="6">6. Suspension and Steering Specialist - KES 100</option>
-            <option value="7">7. Regional Market Valuation - KES 100</option>
-            <option value="8">8. Maintenance Roadmap - KES 40</option>
-            <option value="9">9. Transmission Specialist - KES 200</option>
-            <option value="10">10. Road-test Diagnostics - KES 150</option>
-            <option value="11">11. Hybrid Systems Scan/Check - KES 300</option>
-            <option value="12">12. Wiring Specialist - KES 250</option>
-            <option value="13">13. Skeptical Pre-Purchase Inspector - KES 500</option>
-            <option value="14">14. Fully Electric Vehicles Specialist - KES 1,200</option>
-            <option value="15">15. Chinese Vehicles Specialist - KES 1,500</option>
-            <option value="16">16. Drivetrain (4WD/AWD) - KES 150</option>
-            <option value="17">17. Others/Custom - KES 750</option>
-            <option value="18">18. PHEV System Specialist - KES 400</option>
-        </select>
-
-        <button type="button" id="actionBtn" class="btn" onclick="processEntry()">Ask Johnte 🛠️</button>
-        <button type="button" id="intaSendBtn" class="intaSendPayButton" style="display:none;" data-amount="0" data-currency="KES">Pay</button>
-    </form>
-
-    <div id="reportArea"></div>
-
-    <div class="footer-bio">
-        <strong>About Asunda Autos:</strong><br>
-        Created by a real legendary mechanic born and bred in the garage environment. Passionate about technology, he developed this system to help mechanics, motorists, and vehicle enthusiasts everywhere.
+        <footer>
+            <p>Need physical rescue? <a href="https://wa.me/YOUR_WHATSAPP_NUMBER_HERE" target="_blank">Chat with Johnte on WhatsApp</a></p>
+        </footer>
     </div>
-</div>
-
-<a href="https://wa.me/254115513320" target="_blank" class="wa-btn">Chat Johnte 💬</a>
-
-<script>
-    if ('serviceWorker' in navigator) { navigator.serviceWorker.register('/sw.js'); }
-
-    const prices = {"1":0,"2":60,"3":70,"4":50,"5":80,"6":100,"7":100,"8":40,"9":200,"10":150,"11":300,"12":250,"13":500,"14":1200,"15":1500,"16":150,"17":750,"18":400};
-    
-    // NOTE: Make sure this is your LIVE key for production earning!
-    const intasend = new window.IntaSend({ publicAPIKey: "ISPubKey_live_0fab53b5-fcd7-4228-a681-35b804bb1b1c", live: true });
-
-    // The Mechanic's Scanner: Catches hidden JS errors
-    window.onerror = function(msg, url, line) {
-        showError(`JS Crash: ${msg} (Line ${line})`);
-        return false;
-    };
-
-    function showError(msg) {
-        document.getElementById('errorBox').style.display = 'block';
-        document.getElementById('errorText').innerHTML += msg + "<br>";
-        document.getElementById('actionBtn').innerText = "Ask Johnte 🛠️"; // Reset button
-    }
-
-    function toggleOther(selectEl, inputId) {
-        document.getElementById(inputId).style.display = (selectEl.value === 'other') ? 'block' : 'none';
-    }
-
-    function updateBtnText() {
-        const tier = document.getElementById('tierSelect').value;
-        document.getElementById('actionBtn').textContent = (tier === "1") ? "Ask Johnte 🛠️ (FREE)" : `Pay KES ${prices[tier]} & Ask Johnte 🛠️`;
-    }
-
-    async function processEntry() {
-        document.getElementById('errorBox').style.display = 'none'; // Clear old errors
-        document.getElementById('errorText').innerHTML = "";
-        
-        // Novice Guard: Check required fields
-        const make = document.getElementById('makeModel').value;
-        const issue = document.getElementById('issue').value;
-        if (!make || !issue) {
-            alert("Ndugu, please fill in your Vehicle Make and Describe the Issue before asking Johnte!");
-            return;
-        }
-
-        const tier = document.getElementById('tierSelect').value;
-        const fileInput = document.getElementById('mediaFile');
-        
-        // Safety Guard: 5MB Limit
-        if (fileInput.files.length > 0 && fileInput.files[0].size > 5 * 1024 * 1024) {
-            alert("Ndugu, media file is too large! Maximum allowed is 5MB.");
-            return;
-        }
-
-        if (tier === "1") {
-            sendToAI();
-        } else {
-            document.getElementById('intaSendBtn').dataset.amount = prices[tier];
-            document.getElementById('intaSendBtn').click();
-        }
-    }
-
-    intasend.on("COMPLETE", sendToAI);
-    intasend.on("FAILED", () => showError("Payment failed or was cancelled."));
-
-    async function sendToAI() {
-        const reportArea = document.getElementById('reportArea');
-        const btn = document.getElementById('actionBtn');
-        
-        reportArea.style.display = "block";
-        reportArea.innerHTML = "<b>Johnte is analyzing the vehicle in the garage... 🛠️ Please wait.</b>";
-        btn.innerText = "Analyzing...";
-
-        let mediaBase64 = null;
-        let mediaMimeType = null;
-        const fileInput = document.getElementById('mediaFile');
-
-        try {
-            if (fileInput.files.length > 0) {
-                const file = fileInput.files[0];
-                mediaMimeType = file.type;
-                mediaBase64 = await new Promise((resolve, reject) => {
-                    const reader = new FileReader();
-                    reader.onload = () => resolve(reader.result.split(',')[1]);
-                    reader.onerror = error => reject(error);
-                    reader.readAsDataURL(file);
-                });
-            }
-
-            const payload = {
-                plate: document.getElementById('plate').value || 'Not provided',
-                makeModelYear: document.getElementById('makeModel').value,
-                bodyType: document.getElementById('bodyType').value === 'other' ? document.getElementById('customBody').value : document.getElementById('bodyType').value,
-                fuelType: document.getElementById('fuelType').value === 'other' ? document.getElementById('customFuel').value : document.getElementById('fuelType').value,
-                transmission: document.getElementById('transmission').value === 'other' ? document.getElementById('customTrans').value : document.getElementById('transmission').value,
-                engineCC: document.getElementById('engineCC').value || 'Unknown',
-                driveType: document.getElementById('driveType').value,
-                mileage: document.getElementById('mileage').value || 'Unknown',
-                issue: document.getElementById('issue').value,
-                tier: document.getElementById('tierSelect').value,
-                mediaBase64: mediaBase64,
-                mediaMimeType: mediaMimeType
-            };
-
-            const res = await fetch('/api', {
-                method: 'POST',
-                headers: {'Content-Type': 'application/json'},
-                body: JSON.stringify(payload)
-            });
-            
-            const data = await res.json();
-            
-            if (res.ok) {
-                // Formatting Johnte's report properly with HTML
-                let formattedReport = data.report.replace(/\n/g, '<br>').replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
-                reportArea.innerHTML = `<h3 style="color:var(--gold); border-bottom:1px solid var(--gold); padding-bottom:5px;">Johnte's Diagnostic Report</h3><p>${formattedReport}</p>`;
-            } else {
-                showError(`Server Code ${res.status}: ${data.error || 'Unknown Error'}`);
-                reportArea.style.display = "none";
-            }
-        } catch (e) {
-            showError(`Network/Fetch Error: Check your internet connection. Details: ${e.message}`);
-            reportArea.style.display = "none";
-        }
-        updateBtnText(); // Restore button text
-    }
-    
-    // Initialize button text on load
-    updateBtnText();
-</script>
-
+    <script src="main.js"></script>
 </body>
-                                                                                                      </html>
+                </html>
