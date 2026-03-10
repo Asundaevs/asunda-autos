@@ -1,126 +1,68 @@
-// Toggle logic for "Other" inputs
-function toggleOther(selectId, inputId) {
-    const select = document.getElementById(selectId);
-    const input = document.getElementById(inputId);
-    if (select.value === 'Other') {
-        input.classList.remove('hidden');
-        input.required = true;
-    } else {
-        input.classList.add('hidden');
-        input.required = false;
-    }
-}
+// ASUNDA AUTOS - DIGITAL GARAGE DIAGNOSTIC SCRIPT
+// REWRITE V2.0 (WITH INTASEND DEBUGGER)
 
-// Helper to get final value (Select or custom text)
-function getFinalValue(selectId, inputId) {
-    const val = document.getElementById(selectId).value;
-    return val === 'Other' ? document.getElementById(inputId).value : val;
-}
+// 1. CONFIGURATION - CHANGE YOUR KEY HERE
+const PUBLIC_KEY = "YOUR_PUBLISHABLE_KEY_HERE"; // Must start with ISPubKey_
+const IS_LIVE = false; // Set to TRUE only when using real money/live keys
 
-document.getElementById('johnteForm').addEventListener('submit', async function(e) {
-    e.preventDefault();
-    
-    const submitBtn = document.getElementById('payButton');
-    const statusMsg = document.getElementById('statusMessage');
-    
-    const tierValue = document.getElementById('serviceTier').value;
-    const [priceStr, tierName] = tierValue.split('|');
-    const price = parseInt(priceStr);
-
-    // FREE TIER LOGIC (3 Uses Limit)
-    if (price === 0) {
-        let freeCount = parseInt(localStorage.getItem('johnte_free_reqs') || '0');
-        if (freeCount >= 3) {
-            alert("You've used your 3 free requests! Please select a premium tier to let Johnte work his magic.");
-            return;
-        }
-        localStorage.setItem('johnte_free_reqs', freeCount + 1);
-        processDiagnostics(tierName);
-        return;
-    }
-
-    // PAID TIER LOGIC (IntaSend)
-    submitBtn.disabled = true;
-    submitBtn.innerText = "Securing Payment...";
-
-    try {
-        let intaSend = new window.IntaSend({
-            publicAPIKey: "ISPubKey_live_0fab05af-8805-4d99-8619-dbf0df5b7529", // <-- PASTE PUBLIC KEY HERE
-            live: true 
-        });
-
-        intaSend.on("COMPLETE", (results) => {
-            submitBtn.innerText = "Payment Received! Johnte is looking...";
-            processDiagnostics(tierName);
-        })
-        .on("FAILED", (results) => {
-            alert("Payment failed. Please try again.");
-            submitBtn.disabled = false;
-            submitBtn.innerText = "Ask Johnte";
-        })
-        .on("IN-PROGRESS", (results) => {
-            submitBtn.innerText = "Awaiting Confirmation...";
-        });
-
-        intaSend.collection({
-            amount: price,
-            currency: "KES",
-            host: window.location.origin
-        });
-
-    } catch (err) {
-        alert("Payment Gateway Error. Please refresh.");
-        submitBtn.disabled = false;
-        submitBtn.innerText = "Ask Johnte";
-    }
+// 2. INITIALIZE INTASEND
+const intasend = new window.IntaSend({
+    publicAPIKey: PUBLIC_KEY,
+    live: IS_LIVE
 });
 
-async function processDiagnostics(tierName) {
-    const statusMsg = document.getElementById('statusMessage');
-    const submitBtn = document.getElementById('payButton');
+// 3. LISTEN FOR PAYMENT EVENTS
+intasend.on("COMPLETE", (results) => {
+    console.log("Success:", results);
+    alert("Payment Successful! Loading Johnte's Analysis...");
+    // Logic to show results goes here
+})
+.on("FAILED", (results) => {
+    // --- THIS IS THE CRITICAL DEBUGGER ---
+    // It converts the complex error into a readable pop-up on your phone
+    alert("🚨 INTASEND ERROR: " + JSON.stringify(results)); 
     
-    statusMsg.innerText = "Johnte is analyzing your vehicle data and media...";
-    statusMsg.classList.remove('hidden');
-    document.getElementById('resultArea').classList.add('hidden');
+    // Reset the button so the user can try again
+    const submitBtn = document.getElementById("submit-btn");
+    if(submitBtn) {
+        submitBtn.disabled = false;
+        submitBtn.innerText = "Ask Johnte";
+    }
+})
+.on("IN-PROGRESS", () => {
+    console.log("Payment is in progress...");
+});
 
-    const formData = new FormData();
-    formData.append('tier', tierName);
-    formData.append('userName', document.getElementById('userName').value);
-    formData.append('plateNumber', document.getElementById('plateNumber').value);
-    
-    // Construct strict vehicle profile
-    const profile = `
-        Make/Model/Year: ${document.getElementById('makeModelYear').value}
-        Body: ${getFinalValue('bodyType', 'bodyTypeOther')}
-        Fuel: ${getFinalValue('fuelType', 'fuelTypeOther')}
-        Transmission: ${getFinalValue('transmission', 'transmissionOther')}
-        Drive: ${getFinalValue('driveType', 'driveTypeOther')}
-        Engine CC: ${document.getElementById('engineCC').value}
-        Engine Code: ${document.getElementById('engineCode').value || 'Not provided'}
-        Mileage: ${document.getElementById('mileage').value}
-        Issue: ${document.getElementById('issueDescription').value}
-    `;
-    formData.append('profile', profile);
+// 4. THE MAIN FUNCTION (Triggered by your Form)
+function askJohnte(event) {
+    if (event) event.preventDefault(); // Stop page refresh
 
-    const mediaFile = document.getElementById('mediaUpload').files[0];
-    if (mediaFile) formData.append('media', mediaFile);
+    const submitBtn = document.getElementById("submit-btn");
+    const amount = 50; // Set your tier price here (e.g., 50 KES)
+
+    // Visual feedback
+    submitBtn.disabled = true;
+    submitBtn.innerText = "Connecting Gateway...";
 
     try {
-        const response = await fetch('/api/index', { method: 'POST', body: formData });
-        
-        if (!response.ok) throw new Error("API Exception");
-        
-        const data = await response.json();
-        
-        document.getElementById('diagnosisText').innerText = data.response;
-        document.getElementById('resultArea').classList.remove('hidden');
-        statusMsg.classList.add('hidden');
-
-    } catch (error) {
-        // USER FACING ERROR MESSAGE (True error goes to Vercel logs via Python)
-        statusMsg.innerText = "Johnte is in the garage handling another vehicle, please wait or try again.";
-    } finally {
-        submitBtn.innerText = "Ask Johnte";
+        // Trigger the checkout pop-up
+        intasend.run({
+            amount: amount,
+            currency: "KES",
+            label: "Asunda Autos Diagnostic Service",
+            email: "customer@example.com", // You can pull this from a form field
+        });
+    } catch (err) {
+        alert("CRITICAL SCRIPT ERROR: " + err.message);
         submitBtn.disabled = false;
+        submitBtn.innerText = "Ask Johnte";
     }
 }
+
+// 5. ATTACH TO FORM (Ensure your HTML form has id="diagnostic-form")
+document.addEventListener("DOMContentLoaded", () => {
+    const form = document.getElementById("diagnostic-form");
+    if (form) {
+        form.addEventListener("submit", askJohnte);
+    }
+});
