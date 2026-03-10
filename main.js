@@ -45,7 +45,7 @@ document.getElementById('johnteForm').addEventListener('submit', async function(
 
     try {
         let intaSend = new window.IntaSend({
-            publicAPIKey: "YOUR_INTASEND_PUBLIC_KEY_HERE", // <-- PASTE PUBLIC KEY HERE
+            publicAPIKey: "ISPubKey_live_0fab05af-8805-4d99-8619-dbf0df5b7529", // <-- PASTE PUBLIC KEY HERE
             live: true 
         });
 
