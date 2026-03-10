@@ -1,88 +1,68 @@
 import os
-import json
-import base64
-from http.server import BaseHTTPRequestHandler
-from google import genai
-from google.genai import types
+import google.generativeai as genai
+from flask import Flask, request, jsonify
+from werkzeug.utils import secure_filename
+import tempfile
 
-# Temporary RAM tracker for the Free Tier (resets when serverless function sleeps)
-FREE_TIER_USAGE = {}
+app = Flask(__name__)
 
-class handler(BaseHTTPRequestHandler):
-    def do_OPTIONS(self):
-        self.send_response(200)
-        self.send_header('Access-Control-Allow-Origin', '*')
-        self.send_header('Access-Control-Allow-Headers', 'Content-Type')
-        self.end_headers()
+# Vercel handles this environment variable securely
+genai.configure(api_key=os.environ.get("GEMINI_API_KEY"))
 
-    def do_POST(self):
-        try:
-            content_length = int(self.headers.get('Content-Length', 0))
-            data = json.loads(self.rfile.read(content_length).decode('utf-8'))
-            tier = str(data.get('tier', '1'))
+@app.route('/api/index', methods=['POST'])
+def handle_diagnostic():
+    try:
+        tier = request.form.get('tier')
+        user_name = request.form.get('userName')
+        plate_number = request.form.get('plateNumber')
+        profile = request.form.get('profile')
+        media_file = request.files.get('media')
+
+        # The "Johnte" Signature Persona
+        system_instruction = f"""
+        You are Johnte, a legendary master mechanic born and bred in an East African garage environment. 
+        You love technology but hate corporate fluff. You are helping {user_name} with their vehicle (Plate: {plate_number}).
+        
+        INSTRUCTIONS:
+        1. Speak naturally to the region. Depending on the vehicle and issue, weave in authentic local language (like Kenyan Sheng - e.g., 'Hiyo gari inaleta rada', 'Waseh wa mtaa', 'Check hiyo belt') to build rapport, but ensure the core mechanical advice is 100% technically accurate and professional.
+        2. Analyze the vehicle profile and provided media (if any) specifically for the '{tier}' service tier.
+        3. Be authoritative. If a part needs replacing, say it. Warn against common mistakes for this specific Make/Model.
+        4. Do not mention that you are an AI. You are Johnte.
+        """
+        
+        model = genai.GenerativeModel(
+            model_name="gemini-2.5-flash",
+            system_instruction=system_instruction
+        )
+
+        prompt = f"Service Requested: {tier}\n\nVehicle Profile & Issue:\n{profile}\n\nDiagnose the issue based on these details and any attached media."
+        
+        if media_file:
+            # Serverless-safe temporary save
+            temp_dir = tempfile.gettempdir()
+            file_path = os.path.join(temp_dir, secure_filename(media_file.filename))
+            media_file.save(file_path)
             
-            # Client IP for Free Tier tracking
-            client_ip = self.headers.get('X-Forwarded-For', 'unknown').split(',')[0]
-
-            if tier == "1":
-                usage = FREE_TIER_USAGE.get(client_ip, 0)
-                if usage >= 3:
-                    self._send(400, {"error": "Ndugu, free tier limit (3 times) reached! Please select a paid specialist tier to continue."})
-                    return
-                FREE_TIER_USAGE[client_ip] = usage + 1
-
-            # Check if API Key exists
-            api_key = os.environ.get("GEMINI_API_KEY")
-            if not api_key:
-                self._send(500, {"error": "Server Error: GEMINI_API_KEY is missing in Vercel Environment Variables."})
-                return
-
-            client = genai.Client(api_key=api_key)
+            # Upload to Gemini (Multimodal)
+            uploaded_gemini_file = genai.upload_file(path=file_path)
             
-            # Johnte's Legendary Persona
-            sys_instr = (
-                "You are Johnte, a real legendary mechanic born and bred in the garage environment. "
-                "You are passionate about technology and love vehicles. You developed this system to help "
-                "mechanics, motorists, and vehicle enthusiasts. Speak using a natural mix of Sheng, Swahili, "
-                "and English. Be highly technical, accurate, direct, and empathetic with your diagnosis based on the requested tier. "
-                "If it's a novice, explain the technical terms simply."
-            )
+            # Generate Multimodal Response
+            response = model.generate_content([uploaded_gemini_file, prompt])
             
-            # Vehicle Profile Construction
-            profile = (
-                f"Plate: {data.get('plate', 'N/A')} | "
-                f"Vehicle: {data.get('makeModelYear', 'N/A')} | "
-                f"Body: {data.get('bodyType', 'N/A')} | "
-                f"Fuel: {data.get('fuelType', 'N/A')} | "
-                f"Transmission: {data.get('transmission', 'N/A')} | "
-                f"Engine: {data.get('engineCC', 'N/A')} CC | "
-                f"Drive: {data.get('driveType', 'N/A')} | "
-                f"Mileage: {data.get('mileage', 'N/A')} km\n\n"
-                f"Customer Issue: {data.get('issue', 'N/A')}\n"
-                f"Service Tier Requested: Tier {tier}"
-            )
-            
-            contents = [profile]
-            
-            # Multimodal - Zero Storage! Processes directly from memory.
-            if data.get('mediaBase64'):
-                media_bytes = base64.b64decode(data['mediaBase64'])
-                contents.append(types.Part.from_bytes(data=media_bytes, mime_type=data['mediaMimeType']))
+            # PRIVACY PURGE: Immediate deletion
+            genai.delete_file(uploaded_gemini_file.name)
+            os.remove(file_path)
+        else:
+            # Text-only response
+            response = model.generate_content(prompt)
 
-            # Using stable Gemini 2.5 Flash for high-traffic production
-            response = client.models.generate_content(
-                model='gemini-2.5-flash', 
-                contents=contents, 
-                config=types.GenerateContentConfig(system_instruction=sys_instr)
-            )
-            self._send(200, {"report": response.text})
-            
-        except Exception as e:
-            self._send(500, {"error": f"Engine Crash: {str(e)}"})
+        return jsonify({"response": response.text})
 
-    def _send(self, status, payload):
-        self.send_response(status)
-        self.send_header('Content-type', 'application/json')
-        self.send_header('Access-Control-Allow-Origin', '*')
-        self.end_headers()
-        self.wfile.write(json.dumps(payload).encode())
+    except Exception as e:
+        # ADMIN FACING: Prints exact technical error to Vercel Logs
+        print(f"CRITICAL API ERROR: {str(e)}")
+        # Returns 500 to trigger the "Johnte is in the garage..." user message on frontend
+        return jsonify({"error": "Internal Processing Error"}), 500
+
+if __name__ == '__main__':
+    app.run()
