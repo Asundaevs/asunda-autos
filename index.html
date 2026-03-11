@@ -4,131 +4,166 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Asunda Autos | East African Digital Garage</title>
-    <meta name="description" content="Talk to Johnte, the legendary East African mechanic. Fast, accurate, multimodal vehicle diagnostics, valuation, and repair roadmaps directly from your phone.">
-    <meta name="keywords" content="car diagnostics Kenya, online mechanic, Johnte, Asunda Autos, OBD2 decoding, East Africa auto repair">
+    <meta name="description" content="East African digital garage. Expert vehicle troubleshooting and diagnostics created by a legendary mechanic born and bred in the garage environment.">
+    <meta name="keywords" content="East African digital mechanic, Nairobi car diagnostics, Expert vehicle troubleshooting, Asunda Autos, Car problem decoder Kenya, Specialist mechanic online">
     <link rel="stylesheet" href="style.css">
-    <script src="https://unpkg.com/intasend-inlinejs-sdk@3.0.4/build/intasend-inline.js"></script>
-</head>
+    </head>
 <body>
-    <div class="container">
-        <header>
-            <img src="logo.png" alt="Asunda Autos Logo" class="brand-logo" onerror="this.style.display='none'">
-            <h1>Asunda Autos</h1>
-            <p class="tagline">The East African Digital Garage</p>
-            <div class="legend-box">
-                <p><strong>Meet Johnte:</strong> A legendary master mechanic born and bred in the garage environment. He loves tech and is here to give you expert, no-nonsense advice to keep your machine moving.</p>
-            </div>
-        </header>
+    <header class="app-header">
+        <img src="logo.png" alt="Asunda Autos Logo" class="logo" onerror="this.style.display='none'">
+        <h1>Asunda Autos</h1>
+        <p class="tagline">East African digital garage</p>
+    </header>
 
-        <form id="johnteForm">
-            <h3>Vehicle Profile</h3>
-            
-            <input type="text" id="userName" placeholder="Your Name" required>
-            <input type="text" id="plateNumber" placeholder="Plate Number (e.g., KDA 123A)" required>
-            <input type="text" id="makeModelYear" placeholder="Make / Model / Year (e.g., Toyota Prado 2018)" required>
-            
-            <select id="bodyType" required onchange="toggleOther('bodyType', 'bodyTypeOther')">
-                <option value="" disabled selected>Select Body Type...</option>
-                <option value="Hatchback">Hatchback</option>
-                <option value="Sedan">Sedan</option>
-                <option value="SUV">SUV</option>
-                <option value="Crossover">Crossover</option>
-                <option value="Pickup">Pickup</option>
-                <option value="Van/MPV">Van/MPV</option>
-                <option value="Station Wagon">Station Wagon</option>
-                <option value="Other">Other (Type below)</option>
-            </select>
-            <input type="text" id="bodyTypeOther" class="hidden custom-input" placeholder="Specify Body Type">
+    <main class="container">
+        <section class="legend-note">
+            <p>🛠️ <strong>Created by a real legendary mechanic</strong> born and bred in the garage environment. Johnte loves technology and uses it to help fellow motorists and mechanics keep the wheels turning.</p>
+        </section>
 
-            <select id="fuelType" required onchange="toggleOther('fuelType', 'fuelTypeOther')">
-                <option value="" disabled selected>Select Fuel Type...</option>
-                <option value="Petrol">Petrol</option>
-                <option value="Diesel">Diesel</option>
-                <option value="Hybrid Petrol">Hybrid Petrol</option>
-                <option value="Hybrid Diesel">Hybrid Diesel</option>
-                <option value="PHEV">PHEV</option>
-                <option value="Fully Electric">Fully Electric</option>
-                <option value="Other">Other (Type below)</option>
-            </select>
-            <input type="text" id="fuelTypeOther" class="hidden custom-input" placeholder="Specify Fuel Type">
+        <section class="privacy-alert">
+            <p>🚨 <strong>Garage Note:</strong> No data is kept here! Please <strong>take a screenshot</strong> of your diagnostic report before leaving this page, as it will auto-delete for your privacy.</p>
+        </section>
 
-            <select id="transmission" required onchange="toggleOther('transmission', 'transmissionOther')">
-                <option value="" disabled selected>Select Transmission...</option>
-                <option value="Manual">Manual</option>
-                <option value="Automatic">Automatic</option>
-                <option value="CVT">CVT</option>
-                <option value="DSG">DSG</option>
-                <option value="Other">Other (Type below)</option>
-            </select>
-            <input type="text" id="transmissionOther" class="hidden custom-input" placeholder="Specify Transmission">
-
-            <select id="driveType" required onchange="toggleOther('driveType', 'driveTypeOther')">
-                <option value="" disabled selected>Select Drive Type...</option>
-                <option value="2WD Front">2WD Front</option>
-                <option value="2WD Rear">2WD Rear</option>
-                <option value="AWD">AWD</option>
-                <option value="4WD">4WD</option>
-                <option value="Other">Other (Type below)</option>
-            </select>
-            <input type="text" id="driveTypeOther" class="hidden custom-input" placeholder="Specify Drive Type">
-
-            <input type="text" id="engineCC" placeholder="Engine Displacement (CC)" required>
-            <input type="text" id="mileage" placeholder="Current Mileage (e.g., 120,000 km)" required>
-            
-            <div class="input-group">
-                <input type="text" id="engineCode" placeholder="Engine Code (Optional)">
-                <small class="helper-text">Providing your engine code allows Johnte to cross-reference your specific setup against factory specifications, preventing incorrect parts recommendations and saving you money.</small>
+        <form id="diagnosticForm" class="mechanic-form">
+            <div class="form-group">
+                <label for="userName">Your Name (So Johnte knows who he is talking to)</label>
+                <input type="text" id="userName" required placeholder="e.g., Kamau, Omondi, or Sarah">
             </div>
 
-            <h3>Diagnosis Details</h3>
-            <div class="input-group">
-                <label>Upload Photo or Audio of the issue (Optional):</label>
+            <h3>Vehicle Details</h3>
+            
+            <div class="form-group">
+                <label for="plateNumber">Plate Number</label>
+                <input type="text" id="plateNumber" required placeholder="e.g., KAA 001A">
+            </div>
+
+            <div class="form-group">
+                <label for="makeModelYear">Make / Model / Year</label>
+                <input type="text" id="makeModelYear" required placeholder="e.g., Toyota Prado 2018">
+            </div>
+
+            <div class="form-group">
+                <label for="bodyType">Body Type</label>
+                <select id="bodyType" onchange="toggleCustomInput('bodyType', 'customBody')">
+                    <option value="Hatchback">Hatchback</option>
+                    <option value="Sedan">Sedan</option>
+                    <option value="SUV">SUV</option>
+                    <option value="Crossover">Crossover</option>
+                    <option value="Pickup">Pickup</option>
+                    <option value="Van/MPV">Van/MPV</option>
+                    <option value="Station Wagon">Station Wagon</option>
+                    <option value="Others">Others (Type below)</option>
+                </select>
+                <input type="text" id="customBody" class="custom-input hidden" placeholder="Type your custom body type...">
+            </div>
+
+            <div class="form-group">
+                <label for="fuelType">Fuel Type</label>
+                <select id="fuelType" onchange="toggleCustomInput('fuelType', 'customFuel')">
+                    <option value="Petrol">Petrol</option>
+                    <option value="Diesel">Diesel</option>
+                    <option value="Hybrid Petrol">Hybrid Petrol</option>
+                    <option value="Hybrid Diesel">Hybrid Diesel</option>
+                    <option value="PHEV">PHEV</option>
+                    <option value="Fully Electric">Fully Electric</option>
+                    <option value="Others">Others (Type below)</option>
+                </select>
+                <input type="text" id="customFuel" class="custom-input hidden" placeholder="Type your custom fuel type...">
+            </div>
+
+            <div class="form-group">
+                <label for="transmission">Transmission Type</label>
+                <select id="transmission" onchange="toggleCustomInput('transmission', 'customTrans')">
+                    <option value="Manual">Manual</option>
+                    <option value="Automatic">Automatic</option>
+                    <option value="CVT">CVT</option>
+                    <option value="DSG">DSG</option>
+                    <option value="Others">Others (Type below)</option>
+                </select>
+                <input type="text" id="customTrans" class="custom-input hidden" placeholder="Type your custom transmission...">
+            </div>
+
+            <div class="form-group">
+                <label for="engineCC">Engine Displacement (CC)</label>
+                <input type="number" id="engineCC" required placeholder="e.g., 2000">
+            </div>
+
+            <div class="form-group">
+                <label for="driveType">Drive Type</label>
+                <select id="driveType" onchange="toggleCustomInput('driveType', 'customDrive')">
+                    <option value="2WD Front">2WD Front</option>
+                    <option value="2WD Rear">2WD Rear</option>
+                    <option value="AWD">AWD</option>
+                    <option value="4WD">4WD</option>
+                    <option value="Others">Others (Type below)</option>
+                </select>
+                <input type="text" id="customDrive" class="custom-input hidden" placeholder="Type your custom drive type...">
+            </div>
+
+            <div class="form-group">
+                <label for="mileage">Current Mileage (km)</label>
+                <input type="number" id="mileage" required placeholder="e.g., 85000">
+            </div>
+
+            <div class="form-group">
+                <label for="engineNumber">Engine Number (Optional but Recommended)</label>
+                <input type="text" id="engineNumber" placeholder="Helps Johnte confirm exact specs">
+            </div>
+
+            <h3>Diagnostic Tier</h3>
+            <div class="form-group">
+                <label for="serviceTier">Select Service</label>
+                <select id="serviceTier" required>
+                    <option value="1">1. Chassis/VIN Decoder - Free (3/day)</option>
+                    <option value="2">2. Oils and Fluids Specialist - KES 60</option>
+                    <option value="3">3. Braking and ABS System Specialist - KES 70</option>
+                    <option value="4">4. OBD2/Trouble Codes Decoding - KES 50</option>
+                    <option value="5">5. Engine Diagnostics/Specialist - KES 80</option>
+                    <option value="6">6. Suspension and Steering Systems Specialist - KES 100</option>
+                    <option value="7">7. Regional Market Valuation - KES 100</option>
+                    <option value="8">8. Maintenance Roadmap / Service Details Specialist - KES 40</option>
+                    <option value="9">9. Transmission Specialist - KES 200</option>
+                    <option value="10">10. Road-test Diagnostics - KES 150</option>
+                    <option value="11">11. Hybrid Systems Scan/Check - KES 300</option>
+                    <option value="12">12. Wiring Specialist - KES 250</option>
+                    <option value="13">13. Skeptical Pre Purchase Inspector - KES 500</option>
+                    <option value="14">14. Fully Electric Vehicles (EV) Specialist - KES 1,200</option>
+                    <option value="15">15. Chinese Vehicles Specialist - KES 1,500</option>
+                    <option value="16">16. Drivetrain (4WD/AWD) Specialist - KES 150</option>
+                    <option value="17">17. Others/Custom Diagnostics - KES 750</option>
+                    <option value="18">18. PHEV System Specialist - KES 400</option>
+                    <option value="19">19. Exhaust/Emissions Specialist - KES 200</option>
+                    <option value="20">20. Climate Control/AC Specialist - KES 180</option>
+                </select>
+            </div>
+
+            <h3>Describe the Issue</h3>
+            <div class="form-group">
+                <label for="customIssue">Others/Custom Details (Describe the specific or intermittent problem)</label>
+                <textarea id="customIssue" rows="4" placeholder="E.g., The car jerks when shifting from gear 2 to 3..."></textarea>
+            </div>
+
+            <div class="form-group">
+                <label for="mediaUpload">Upload Photo, Audio, or Video</label>
+                <p class="small-text">Note: Videos should be 30-60 seconds max.</p>
                 <input type="file" id="mediaUpload" accept="image/*,video/*,audio/*">
             </div>
 
-            <textarea id="issueDescription" placeholder="What is the problem? Describe the sounds, leaks, or how the car feels..." required></textarea>
-
-            <select id="serviceTier" required>
-                <option value="" disabled selected>Select a Service Tier...</option>
-                <option value="0|Chassis/Vin decoder">1. Chassis/Vin decoder - Free</option>
-                <option value="60|Oils and fluids specialist">2. Oils and fluids specialist - KES 60</option>
-                <option value="70|Braking and Abs system specialist">3. Braking and Abs system specialist - KES 70</option>
-                <option value="50|OBD2/Trouble codes decoding">4. OBD2/Trouble codes decoding - KES 50</option>
-                <option value="80|Engine diagnostics/Specialist">5. Engine diagnostics/Specialist - KES 80</option>
-                <option value="100|Suspension and Steering systems specialist">6. Suspension and Steering systems specialist - KES 100</option>
-                <option value="100|Regional Market Valuation">7. Regional Market Valuation - KES 100</option>
-                <option value="40|Maintenance roadmap">8. Maintenance roadmap / Service details - KES 40</option>
-                <option value="200|Transmission Specialist">9. Transmission Specialist - KES 200</option>
-                <option value="150|Road-test Diagnostics">10. Road-test Diagnostics - KES 150</option>
-                <option value="300|Hybrid Systems Scan/Check">11. Hybrid Systems Scan/Check - KES 300</option>
-                <option value="250|Wiring Specialist">12. Wiring Specialist - KES 250</option>
-                <option value="500|Skeptical Pre Purchase Inspector">13. Skeptical Pre Purchase Inspector - KES 500</option>
-                <option value="1200|Fully Electric Vehicles Specialist">14. Fully Electric Vehicles Specialist - KES 1,200</option>
-                <option value="1500|Chinese Vehicles Specialist">15. Chinese Vehicles Specialist - KES 1,500</option>
-                <option value="150|Drivetrain (4wd/AWD)">16. Drivetrain (4wd/AWD) - KES 150</option>
-                <option value="750|Others/Custom">17. Others/Custom - KES 750</option>
-                <option value="400|PHEV System Specialist">18. PHEV System Specialist - KES 400</option>
-                <option value="150|Cooling System Specialist">19. Cooling System Specialist - KES 150</option>
-                <option value="150|Exhaust System Specialist">20. Exhaust System Specialist - KES 150</option>
-            </select>
-
-            <button type="submit" id="payButton">Ask Johnte</button>
+            <button type="submit" id="askJohnteBtn" class="primary-btn">Ask Johnte</button>
+            <p id="statusMessage" class="status-msg hidden">Johnte is analyzing...</p>
         </form>
 
-        <div id="statusMessage" class="hidden status-toast"></div>
-        
-        <div id="resultArea" class="hidden">
-            <h3>Johnte's Report:</h3>
-            <div id="diagnosisText" class="report-box"></div>
-            <div class="warning-box">
-                <strong>⚠️ IMPORTANT: Please screenshot this report immediately.</strong> For your privacy, all data and media are permanently deleted from our servers after this session.
-            </div>
+        <div id="reportContainer" class="hidden">
+            <h3>Diagnostic Report</h3>
+            <div id="reportContent"></div>
         </div>
 
-        <footer>
-            <p>Need physical rescue? <a href="https://wa.me/254115513320" target="_blank">Chat with Johnte on WhatsApp</a></p>
-        </footer>
-    </div>
-    <script src="main.js"></script>
+        <section class="human-support">
+            <p>Need real human interaction? Talk to the workshop.</p>
+            <a href="https://wa.me/254115513320" target="_blank" id="whatsappBtn" class="whatsapp-btn">Chat with Johnte</a>
+        </section>
+    </main>
+
+    <script src="script.js"></script>
 </body>
-                </html>
+                        </html>
