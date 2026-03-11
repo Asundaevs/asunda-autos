@@ -63,7 +63,7 @@ document.getElementById('diagnosticForm').addEventListener('submit', async funct
             let windowIntaSend = new window.IntaSend({
                 // Note: The public key should ideally be injected dynamically or set here for the frontend SDK.
                 // Replace with your actual public key in production frontend code.
-                publicAPIKey: "REPLACE_WITH_YOUR_INTASEND_PUBLIC_KEY_HERE",
+                publicAPIKey: "ISPubKey_live_0fab05af-8805-4d99-8619-dbf0df5b7529",
                 live: true 
             });
 
